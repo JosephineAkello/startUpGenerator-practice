@@ -26,13 +26,43 @@ class RandomWordsState extends State<RandomWords> {
   final Set<WordPair> _saved =new Set<WordPair>();
   final _biggerFont = const TextStyle(fontSize: 18.0);
 
+
+void _pushSaved(){
+  Navigator.of(context).push(
+    MaterialPageRoute<void>(
+      builder: (context){
+        Iterable<ListTile> tiles= _saved.map(
+        (WordPair pair){
+          ListTile(
+            title: Text(
+              pair.asPascalCase,
+              style: _biggerFont,
+            ),
+            );
+        },
+        );
+        final List<Widget> divided =ListTile
+        .divideTiles(
+          context: context,
+          tiles: tiles,
+        ).toList();
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text('Saved Suggestions'),
+),
+body: ListView(children: divided),
+        );
+      },
+    ),
+  );
+}
   @override
   Widget build(context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Startup Name Generator'),
         actions: <Widget>[
-          IconButton(icon: const Icon(Icons.list),onPressed: _pushShaved),
+          IconButton(icon: const Icon(Icons.list),onPressed: _pushSaved),
         ],
       ),
       body: _buildSuggestions(),
