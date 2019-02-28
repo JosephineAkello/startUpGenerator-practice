@@ -11,9 +11,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Startup Name Generator',
-      theme: ThemeData(
-        primaryColor: Colors.purpleAccent
-      ),
+      theme: ThemeData(primaryColor: Colors.purpleAccent,),
       home: RandomWords(),
     );
   }
@@ -21,51 +19,50 @@ class MyApp extends StatelessWidget {
 
 class RandomWords extends StatefulWidget {
   @override
-  RandomWordsState createState() => new RandomWordsState();
+  RandomWordsState createState() => RandomWordsState();
 }
 
 class RandomWordsState extends State<RandomWords> {
-  final List<WordPair>_suggestions = <WordPair>[];
-  final Set<WordPair> _saved =new Set<WordPair>();
+  final List<WordPair> _suggestions = <WordPair>[];
+  final Set<WordPair> _saved =  Set<WordPair>();
   final TextStyle _biggerFont = const TextStyle(fontSize: 18.0);
 
-
-void _pushSaved(){
-  Navigator.of(context).push(
-    MaterialPageRoute<void>(
-      builder: (context){
-        Iterable<ListTile> tiles= _saved.map(
-        (WordPair pair){
-          ListTile(
-            title: Text(
-              pair.asPascalCase,
-              style: _biggerFont,
+  void _pushSaved() {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (context) {
+          final Iterable<ListTile> tiles = _saved.map(
+            (WordPair pair) {
+              return ListTile(
+                title: Text(
+                  pair.asPascalCase,
+                  style: _biggerFont,
+                ),
+              );
+            },
+          );
+          final List<Widget> divided = ListTile.divideTiles(
+            context: context,
+            tiles: tiles,
+          ).toList();
+          return Scaffold(
+            appBar: AppBar(
+              title: const Text('Saved Suggestions'),
             ),
-            );
+            body: ListView(children: divided),
+          );
         },
-        );
-        final List<Widget> divided =ListTile
-        .divideTiles(
-          context: context,
-          tiles: tiles,
-        ).toList();
-        return Scaffold(
-          appBar: AppBar(
-            title: const Text('Saved Suggestions'),
-),
-body: ListView(children: divided),
-        );
-      },
-    ),
-  );
-}
+      ),
+    );
+  }
+
   @override
   Widget build(context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Startup Name Generator'),
+        title: const Text('Startup Name Generator'),
         actions: <Widget>[
-          IconButton(icon: const Icon(Icons.list),onPressed: _pushSaved),
+          IconButton(icon: const Icon(Icons.list), onPressed: _pushSaved),
         ],
       ),
       body: _buildSuggestions(),
@@ -75,12 +72,16 @@ body: ListView(children: divided),
   Widget _buildSuggestions() {
     return ListView.builder(
         padding: const EdgeInsets.all(16.0),
-        itemBuilder: (context, i) {
-          if (i.isOdd) return Divider();
+        itemBuilder: (_context, int i) {
+          if (i.isOdd) {
+            return const Divider();
+          }
 
-          final index = 1 ~/ 2;
-          if (index >= _suggestions.length)
+          final int index = i ~/ 2;
+          if (index >= _suggestions.length) {
             _suggestions.addAll(generateWordPairs().take(10));
+          }
+
           return _buildRow(_suggestions[index]);
         });
   }
@@ -94,18 +95,17 @@ body: ListView(children: divided),
         style: _biggerFont,
       ),
       trailing: Icon(
-        alreadySaved? Icons.favorite: Icons.favorite_border,
-        color:alreadySaved?Colors.red:null,
+        alreadySaved ? Icons.favorite : Icons.favorite_border,
+        color: alreadySaved ? Colors.red : null,
       ),
-      onTap: (){
+      onTap: () {
         setState(() {
-                  if(alreadySaved){
-                    _saved.remove(pair);
-                  }
-                  else{
-                    _saved.add(pair);
-                  }
-                });
+          if (alreadySaved) {
+            _saved.remove(pair);
+          } else {
+            _saved.add(pair);
+          }
+        });
       },
     );
   }
